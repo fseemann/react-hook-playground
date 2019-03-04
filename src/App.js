@@ -1,28 +1,40 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { useForm, ifTrueAppend } from './forms'
+import './App.css'
+import '../node_modules/semantic-ui-css/semantic.min.css'
+import * as yup from 'yup'
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+export default function App() {
+  const shape = yup.object().shape({
+    name: yup.string().email('Name must be a valid email.').required('Name is required.').default('test@test.de'),
+    password: yup.string().required('Password is required')
+  });
+
+  const onSubmit = (state, setErrors) => { 
+    console.log('submit', state); 
+    setErrors({
+      'password': 'Invalid password.'
+    })
   }
+  const {input, errors, anyErrors, handleSubmit} = useForm(shape, onSubmit)
+  return (
+    <form className={'ui large form' + ifTrueAppend(anyErrors, 'error')} onSubmit={handleSubmit}>
+      <div className={'field' + ifTrueAppend(errors.name, 'error')}>
+        <div className="ui input">
+        < input {...input.name} placeholder="Username"></input>
+        </div>
+      </div>
+      <div className={'field' + ifTrueAppend(errors.password, 'error')}>
+        <div className="ui input">
+          <input {...input.password} type="password" placeholder="Password"></input>
+        </div>
+      </div>
+      <button className="ui fluid primary button">Login</button>
+      <div className="ui error message">
+        <ul className="list">
+          {Object.keys(errors).flatMap(it => errors[it]).map(it => <li key={it}>{it}</li>)}
+        </ul>
+      </div>
+    </form>
+  )
 }
-
-export default App;
