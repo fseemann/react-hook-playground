@@ -1,8 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import {NativeForm, FormikForm} from './App';
 import * as serviceWorker from './serviceWorker';
+
+function App() {
+    return <div>
+        <NativeForm></NativeForm>
+        <FormikForm></FormikForm>
+    </div>
+}
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
